@@ -6,10 +6,10 @@ use std::{ hash::{ Hash, Hasher }, collections::hash_map::DefaultHasher, fmt::De
 
 /* Structs */
 pub struct HashMap<K: Hash, V> {
-    pub items: Vec<Option<Node<K, V>>>,
+    items: Vec<Option<Node<K, V>>>,
 }
 #[derive(Debug)]
-pub struct Node<K: Hash, V> {
+struct Node<K: Hash, V> {
     next: Option<Box<Self>>,
     value: V,
     key: K,
@@ -47,6 +47,9 @@ impl<K: Hash, V> HashMap<K, V> {
         let mut hasher = Self::new_hasher();
         k.hash(&mut hasher);
         hasher.finish()
+    }
+    pub fn len(&self) -> usize {
+        self.items.len()
     }
 
     /* Insert item */
