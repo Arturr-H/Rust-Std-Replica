@@ -11,6 +11,6 @@ fn main() {
     hm.insert("haha", 333);
     hm.insert("popo", 444);
     hm.insert("baba", 555);
-    dbg!(&hm.items);
-    dbg!(hm.get("tom"));
+    println!("{hm:?}");
+    println!("{:?}", hm.get("janice"));
 }
