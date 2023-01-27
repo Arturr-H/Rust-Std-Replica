@@ -20,7 +20,7 @@ impl<K: Hash, V> HashMap<K, V> {
     /* Constructor */
     pub fn new() -> Self {
         let mut items = Vec::with_capacity(10);
-        for i in 0..11 { items.push(None); }
+        for i in 0..10 { items.push(None); }
 
         Self { items }
     }
