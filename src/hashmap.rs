@@ -26,7 +26,7 @@ impl<K: Hash, V> HashMap<K, V> {
     }
     pub fn with_capacity(capacity: usize) -> Self {
         let mut items = Vec::with_capacity(capacity);
-        for i in 0..capacity+1 { items.push(None); }
+        for i in 0..capacity { items.push(None); }
 
         Self { items }
     }
