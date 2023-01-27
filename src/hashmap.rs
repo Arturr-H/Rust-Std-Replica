@@ -5,18 +5,18 @@
 use std::{ hash::{ Hash, Hasher }, collections::hash_map::DefaultHasher, fmt::Debug };
 
 /* Structs */
-pub struct HashMap<K: Hash + Debug, V> {
+pub struct HashMap<K: Hash, V> {
     pub items: Vec<Option<Node<K, V>>>,
 }
 #[derive(Debug)]
-pub struct Node<K: Hash + Debug, V> {
+pub struct Node<K: Hash, V> {
     next: Option<Box<Self>>,
     value: V,
     key: K,
 }
 
 /* Method implementations */
-impl<K: Hash + Debug, V> HashMap<K, V> {
+impl<K: Hash, V> HashMap<K, V> {
     /* Constructor */
     pub fn new() -> Self {
         let mut items = Vec::with_capacity(10);
@@ -108,4 +108,52 @@ impl<K: Hash + Debug, V> HashMap<K, V> {
             None => None
         }
     }
+}
+
+/* Into key value tuple */
+impl<'a, K: Hash, V> Into<(&'a K, &'a V)> for &'a Node<K, V> {
+    fn into(self) -> (&'a K, &'a V) {
+        (&self.key, &self.value)
+    }
+}
+
+/* Debug implementations */
+impl<K:Debug + Hash, V:Debug> std::fmt::Debug for HashMap<K, V> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let mut nodes:Vec<(&K, &V)> = Vec::new();
+
+        for item in self.items.iter() {
+            nodes = vec![nodes, recurse(item.as_ref())].concat();
+        };
+
+        println!("HashMap {{");
+        for (k, v) in nodes.iter() {
+            println!("    {k:?}: {v:?},");
+        };
+        println!("}}");
+
+        std::fmt::Result::Ok(())
+    }
+}
+fn recurse<'a, K: Hash, V>(next:Option<&'a Node<K, V>>) -> Vec<(&'a K, &'a V)> {
+    let mut nodes:Vec<(&K, &V)> = Vec::new();
+    match next {
+        Some(e) => {
+            nodes = vec![
+                nodes,
+                vec![e.into()],
+                recurse(
+                    e.next
+                        .as_ref()
+                        .and_then(|e| Some(
+                            e.as_ref()
+                        )
+                    )
+                )
+            ].concat();
+        },
+        None => ()
+    };
+
+    nodes
 }
